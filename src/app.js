@@ -28,6 +28,7 @@ app.post("/signup", (req, res) => {
       password: password,
     });
   
+   console.log(userData);
    
       userData.save();
       res.status(200).json({
@@ -141,29 +142,36 @@ app.get("/count", async (req, res) => {
 });
 
 //update data of a user
-app.patch("/userupdate", (req, res) => {
+app.patch("/userupdate/:userId", async (req, res) => {
   try {
-
-    const userId = req.body.userId;
+    const userId = req.params.userId;
     const data = req.body;
-//findbyIdAndUpdate AND FindOneAndUpdate both the method are same as its working
-    // User.findByIdAndUpdate(userId,data,)
-    
-    User.findByIdAndUpdate({_id:userId},data,{returnDocument:"after"})
-    //by using the third parameter of a findbyidupdate method in returndocument 
-    //by using before for third parameter value we get the old data from collection then old one can return 
-    //by using after for third parameter value  then first data updated first then return the updated data
 
-    .then((data)=>{
-      console.log(data);
-      
-        res.send("user updated successfully");
-    })
+    // Define allowed fields for update
+    const allowedFields = ["age", "photoUrl", "about", "skills", "gender"]; 
+
+    // Check if only allowed fields are being updated
+    const isUpdateAllowed = Object.keys(data).every(key => allowedFields.includes(key));
+    if (!isUpdateAllowed) {
+      return res.status(400).send("Update not allowed for these fields.");
+    }
+
+    // Validate skills (optional)
+    if (data.skills && data.skills.length > 10) {
+      return res.status(400).send("Skills array should have a maximum of 10 elements.");
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, data, { new: true }); // Return the updated document
+    if (!updatedUser) {
+      return res.status(404).send("User not found.");
+    }
+
+    res.status(200).send(updatedUser);
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).send("An error occurred while updating the user.");
   }
 });
-
 //api for deleting the multiple document in the collection
 
 app.delete('/deletemultiple',async(req,res)=>{
