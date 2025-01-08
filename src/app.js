@@ -140,7 +140,7 @@ app.get("/count", async (req, res) => {
     console.log(error);
   }
 });
-
+//we can do a api level data sanitization 
 //update data of a user
 app.patch("/userupdate/:userId", async (req, res) => {
   try {
