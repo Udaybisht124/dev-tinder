@@ -38,7 +38,37 @@ res.status(200).send("user registered successfully");
 
 })
 
+//create a login api here
+app.post("/login",async(req,res)=>{
 
+  try {
+    //first of all get the email and password from the user
+    const {email,password} = req.body;
+    
+    //then check email provided by the user is present in the db or not
+const user = await User.findOne({email:email});
+if(!user){
+  res.status(404).send("invalid credantials");
+}
+
+//if user email is find in db then we can match the password with the db stored password
+
+const isPasswordValid = await bcrypt.compare(password,user.password);
+
+if(!isPasswordValid){
+  res.status(404).send("invalid credentails");
+}
+else{
+  res.status(200).send('login successfully');
+}
+
+
+  } catch (error){
+    console.log(error);
+    
+  }
+
+})
 
 
 
