@@ -44,14 +44,15 @@ const userSchema = new mongoose.Schema(
       validate(value) {
         if (!validator.isURL(value, { require_protocol: true })) {
           throw new Error("Invalid photo URL: " + value);
-        }
+        }}
       },
-      password: {
-        type: String,
-        required: true,
-        minLength: [5, "password minimum length be 5"],
-        maxLength: [10, "password cannot be greater than 10"],
-      },
+     
+password:{
+  type:String,
+  required:true
+}
+,
+
       age: {
         type: Number,
       },
@@ -71,7 +72,6 @@ const userSchema = new mongoose.Schema(
         },
       },
     },
-  },
   //here we can also used the timestamps to get the created and updated date time of schema
   { timestamps: true }
 );

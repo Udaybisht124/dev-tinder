@@ -22,14 +22,20 @@ app.post("/signup",async(req,res)=>{
   
   const {firstName,lastName,email,password} = req.body;
 //now we can do hashed our password using bcrypt package
-const  passwordHashed = await  bcrypt.hash(password,10);
+const  passwordHashed = await bcrypt.hash(password,10);
 
 const userData = await new User({
 firstName,
 lastName,
 email,
-password:passwordHashed  
+password:passwordHashed
 })
+
+//now save the user into the database
+ await userData.save();
+
+res.status(200).send("user registered successfully");
+
 })
 
 
