@@ -1,10 +1,14 @@
 const express = require("express");
+const validator = require("validator");
 //create an express application instance
 const app = express();
 const User = require("../models/user");
 const connectDB = require("../config/database");
 const user = require("../models/user");
-
+const validatePassword = require("validator");
+const signupValidation = require("./utils/validation");
+const validateSigupData = require("./utils/validation");
+const bcrypt = require("bcrypt");
 //listen the server or app on some port to listen the incoming request to the server
 
 //if we want to reply the same message for all incoming request to the server now we can use the request handler
@@ -12,34 +16,25 @@ const user = require("../models/user");
 
 app.use(express.json());
 
-// app.use((req,res)=>{
-//     res.send("hello from server");
-// })
-
-//create a signup api to send the data dynamic to the database
-app.post("/signup", (req, res) => {
- 
-  try {
-    const { firstName, lastName, email, password } = req.body;
-    const userData = new User({
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: password,
-    });
+app.post("/signup",async(req,res)=>{
+  //first we can validating the signup data 
+  signupValidation(req);
   
-   console.log(userData);
-   
-      userData.save();
-      res.status(200).json({
-        message: "user created successfully",
-        success: true,
-      });
-       
-  } catch (error) {
-    console.log(error);
-    
-  }})
+  const {firstName,lastName,email,password} = req.body;
+//now we can do hashed our password using bcrypt package
+const  passwordHashed = await  bcrypt.hash(password,10);
+
+const userData = await new User({
+firstName,
+lastName,
+email,
+password:passwordHashed  
+})
+})
+
+
+
+
 
 //create a /user get api for get all the user in the database by emaid id
 app.get("/users", async (req, res) => {
@@ -140,7 +135,7 @@ app.get("/count", async (req, res) => {
     console.log(error);
   }
 });
-//we can do a api level data sanitization 
+//we can do a api level data sanitization
 //update data of a user
 app.patch("/userupdate/:userId", async (req, res) => {
   try {
@@ -148,20 +143,26 @@ app.patch("/userupdate/:userId", async (req, res) => {
     const data = req.body;
 
     // Define allowed fields for update
-    const allowedFields = ["age", "photoUrl", "about", "skills", "gender"]; 
+    const allowedFields = ["age", "photoUrl", "about", "skills", "gender"];
 
     // Check if only allowed fields are being updated
-    const isUpdateAllowed = Object.keys(data).every(key => allowedFields.includes(key));
+    const isUpdateAllowed = Object.keys(data).every((key) =>
+      allowedFields.includes(key)
+    );
     if (!isUpdateAllowed) {
       return res.status(400).send("Update not allowed for these fields.");
     }
 
     // Validate skills (optional)
     if (data.skills && data.skills.length > 10) {
-      return res.status(400).send("Skills array should have a maximum of 10 elements.");
+      return res
+        .status(400)
+        .send("Skills array should have a maximum of 10 elements.");
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, data, { new: true }); // Return the updated document
+    const updatedUser = await User.findByIdAndUpdate(userId, data, {
+      new: true,
+    }); // Return the updated document
     if (!updatedUser) {
       return res.status(404).send("User not found.");
     }
@@ -174,22 +175,16 @@ app.patch("/userupdate/:userId", async (req, res) => {
 });
 //api for deleting the multiple document in the collection
 
-app.delete('/deletemultiple',async(req,res)=>{
+app.delete("/deletemultiple", async (req, res) => {
   try {
     const userEmail = req.body.email;
-    await User.deleteMany({email:userEmail})
-    .then((data)=>{
-      res.status(200).send('multiple document deleted successfully');
-      
-    })
-
+    await User.deleteMany({ email: userEmail }).then((data) => {
+      res.status(200).send("multiple document deleted successfully");
+    });
   } catch (error) {
     console.log(error);
-    
   }
-})
-
-
+});
 
 connectDB().then(() => {
   console.log("database connected");
