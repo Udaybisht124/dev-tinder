@@ -1,6 +1,6 @@
 
 const validator = require('validator');
-const { validate } = require('../../models/user');
+const { validate } = require('../models/user');
 const validateSigupData = (req) => {
 
 const {firstName,lastName,email,password} = req.body;

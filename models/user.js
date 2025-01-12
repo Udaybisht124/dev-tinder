@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+
 //here we can import the validator library for string validations and sanitisors
 function validateEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple email regex
@@ -75,5 +78,34 @@ password:{
   //here we can also used the timestamps to get the created and updated date time of schema
   { timestamps: true }
 );
+
+
+
+
+
+//here we can make also a some helper function  or schema method for specific model like user
+//always use a normal javascript function here because this is not work with the arrow function 
+//here this is reference to the current user or we can say that instance of a user model
+userSchema.methods.getJWT = async function(){
+  //here we can get the user from this
+  const user = this;
+
+ const token = await jwt.sign({ _id: user._id }, "DEV-TINDER021");
+
+ return token;
+
+}
+
+userSchema.methods.validatePASSWORD = async function (passwordEnterByUser){
+  const user = this;
+const hashedPassword = user.password;
+
+const isPasswordValid = await bcrypt.hash(passwordEnterByUser,hashedPassword);
+
+return isPasswordValid;
+
+}
+
+
 
 module.exports = mongoose.model("User", userSchema);
