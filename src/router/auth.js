@@ -1,14 +1,15 @@
 const express = require("express");
 //here we can get the router from express
 const authRouter = express.Router();
-const signupValidation = require("../utils/validation");
+const validateSignupData = require("../utils/validation");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 
+//here we can write the signup api 
 authRouter.post("/signup", async (req, res) => {
   //first we can validating the signup data
-  signupValidation(req);
-
+try {
+  validateSignupData(req);
   const { firstName, lastName, email, password } = req.body;
   //now we can do hashed our password using bcrypt package
   const passwordHashed = await bcrypt.hash(password, 10);
@@ -23,7 +24,12 @@ authRouter.post("/signup", async (req, res) => {
   //now save the user into the database
   await userData.save();
 
-  res.status(200).send("user registered successfully");
+  res.status(200).send("user registered successfully");  
+} catch (error) {
+  console.log("Error"+error);
+  
+}
+
 });
 
 //here we can write the login router 
@@ -62,9 +68,17 @@ authRouter.post("/login",async (req,res)=>{
     }
   });
 
+  //here we can write the logout api for logout the user
+  authRouter.post("/logout",(req,res)=>{
+try {
+  res.cookie("token",null,{expires:new Date(Date.now())})
+res.status(200).send("User logout successfully!");
+} catch (error) {
+  console.log(error);
+  
+}
 
-
-
+  })
 
 
 module.exports = authRouter;

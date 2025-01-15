@@ -6,6 +6,7 @@ const User = require("../models/user");
 const authentication = async(req,res,next) =>{
 
     try {
+      
   //extract the token first from req object inside cookies
   const cookie = req.cookies;
   const {token} = cookie;

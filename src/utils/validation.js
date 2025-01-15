@@ -1,7 +1,7 @@
 
 const validator = require('validator');
 const { validate } = require('../models/user');
-const validateSigupData = (req) => {
+const validateSignupData = (req) => {
 
 const {firstName,lastName,email,password} = req.body;
 
@@ -21,4 +21,21 @@ else if(!validator.isStrongPassword(password)){
     throw new Error('please enter a strong  password');
 }
 }
-module.exports = validateSigupData
+
+const validateEditUserData = (req) =>{
+  try {
+    
+const isFieldEditable = ["firstName","age","lastName","photoUrl","gender","about","skills"];
+
+const isEditProfileAllowed = Object.keys(req.body).every(field => isFieldEditable.includes(field));
+
+return isEditProfileAllowed;
+
+  } catch (error) {
+    res.status(404).send("Error message"+error);
+  }
+}
+module.exports ={
+  validateEditUserData,
+validateSignupData
+}
