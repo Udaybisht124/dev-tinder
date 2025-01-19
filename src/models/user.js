@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-
 //here we can import the validator library for string validations and sanitisors
 function validateEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple email regex
@@ -16,6 +15,7 @@ const userSchema = new mongoose.Schema(
       minLength: [4, `please enter firstName greater than 3`],
       maxLength: [20, `firstName length cannot be greater then 8`],
       lowercase: true,
+      index:true
     },
 
     lastName: {
@@ -105,5 +105,4 @@ userSchema.methods.validatePASSWORD = async function (passwordEnterByUser) {
 
   return isPasswordValid;
 };
-
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("User",userSchema);

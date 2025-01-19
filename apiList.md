@@ -14,9 +14,9 @@
 
 ### connectionRequestRouter
 -POST /request/send/interested/:userid
--POST :/request/send/ignored/:userid
--POST /request/review/accepted/:requestId
--POST /request/review/rejected/:requestedId
+-POST /request/review/:status/:requestId
+
+
  
  ## userRouter
  -GET : /user/connections
@@ -25,3 +25,17 @@
 
 
  status: ignore,accepted,rejected,interested
+
+
+
+./feed/page=1&limit=10
+1-10
+./feed/page=2&limit=10
+11-20
+./feed/page=3&limit=10
+21-30
+./feed/page=4&limit=10
+31-40
+
+skip = (page-1)*10  
+

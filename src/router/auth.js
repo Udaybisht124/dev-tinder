@@ -9,7 +9,9 @@ const User = require("../models/user");
 authRouter.post("/signup", async (req, res) => {
   //first we can validating the signup data
 try {
-  validateSignupData(req);
+
+  validateSignupData;
+
   const { firstName, lastName, email, password } = req.body;
   //now we can do hashed our password using bcrypt package
   const passwordHashed = await bcrypt.hash(password, 10);
@@ -25,7 +27,9 @@ try {
   await userData.save();
 
   res.status(200).send("user registered successfully");  
+
 } catch (error) {
+
   console.log("Error"+error);
   
 }
@@ -47,13 +51,14 @@ authRouter.post("/login",async (req,res)=>{
       //if user email is find in db then we can match the password with the db stored password
   
       const isPasswordValid = await user.validatePASSWORD(password);
+      
       if (isPasswordValid) {
+
         //here we can generate the jwt token
   
-        //here we can make our code for readable by writing the logic of generating the jwt token to schema methods 
+        //here we can make our code for readable by writing the logic of generating the j     wt token to schema methods 
   
         const token = await user.getJWT();
-  
   
         //expires the cookie after 7 days
   

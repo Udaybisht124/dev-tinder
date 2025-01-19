@@ -3,10 +3,12 @@ const mongoose = require("mongoose");
 const requestSchema = new mongoose.Schema({
   fromUserId: {
     type: mongoose.Schema.Types.ObjectId,
+    ref:'User',
     required: true,
   },
   toUserId: {
     type: mongoose.Schema.Types.ObjectId,
+    ref:'User',
     required: true,
   },
   status: {
@@ -21,6 +23,10 @@ const requestSchema = new mongoose.Schema({
  
 },
 {timestamps:true});
+
+//we can use the compund index for making our query optimisation
+requestSchema.index({fromUserId:1,toUserId:1});
+
 
 
 //we can also write some schema level middleware to handle the condition like sender dos,t send itself a connection request

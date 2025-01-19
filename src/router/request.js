@@ -2,6 +2,7 @@ const express = require("express");
 const requestRouter = express.Router();
 const Auth = require("../middlewares/auth");
 const User = require("../models/user");
+const ConnectionRequest = require("../models/requestModel");
 const connectionRequest = require("../models/requestModel");
 
 requestRouter.post("/request/send/:status/:toUserId",Auth,async(req,res)=>{
@@ -47,7 +48,7 @@ if(isRequestAlreadyExist){
 }
 
 
-const data  = new  connectionRequest({
+const data  = new ConnectionRequest({
 fromUserId,
 toUserId,
 status,
@@ -79,7 +80,50 @@ else{
     }
     })
     
+requestRouter.post("/request/review/:status/:requestId",Auth,async(req,res)=>{
+    try {
+        const loggedInUser = req.user;
+        const status = req.params.status;
+        const requestId = req.params.requestId; 
+        //validate only status should be a accepted or rejected
+        const statusAllowed = ["accepted","rejected"];
 
+        if(!statusAllowed.includes(status)){
+            return res.status(400).send("Invalid status");
+        }
+
+        const connectionRequestData = await ConnectionRequest.findOne({
+            _id:requestId,//here we can check the request id is present in our db
+            toUserId:loggedInUser._id,
+            status:"interested"
+        })
+if(!connectionRequestData){
+    return res.status(404).
+    json({
+        message:"Invalid Connection Request",
+        success:false
+    })
+}
+
+connectionRequestData.status = status;
+const data = await connectionRequestData.save();
+
+res.status(200).json({
+    message:loggedInUser.firstName+"is"+status+"the connection request",
+    data
+})
+
+
+//uday send request to divya
+//now we can check only divya can recieve the uda requeset means loggedinuserid = touserid
+//status should always be a accepted
+//request id should be a valid in db
+
+
+    } catch (error) {
+        res.status(400).send("ERROR"+error.message);
+}}
+)
 
 
 module.exports = requestRouter;

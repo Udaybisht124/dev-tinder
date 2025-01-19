@@ -21,7 +21,7 @@ if(!token){
   const decodeObj = await jwt.verify(token,"DEV-TINDER021");
 
   const {_id} = decodeObj;
-
+  
   //find a user by _id
   const user = await User.findById({_id});
 if(!user){
