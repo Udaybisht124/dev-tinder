@@ -53,7 +53,7 @@ userRouter.get("/user/connections", Auth, async (req, res) => {
   }
 });
 
-userRouter.get("/feed", Auth, async (req, res) => {
+userRouter.get("/feed", Auth, async (req, res) => {uda
   try {
 
     

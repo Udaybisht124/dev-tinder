@@ -37,41 +37,42 @@ try {
 });
 
 //here we can write the login router 
-authRouter.post("/login",async (req,res)=>{
-    try {
-      //first of all get the email and password from the user
-      const { email, password } = req.body;
-  
-      //then check email provided by the user is present in the db or not
-      const user = await User.findOne({ email: email });
-      if (!user) {
-        res.status(404).send("invalid credantials");
-      }
-  
-      //if user email is find in db then we can match the password with the db stored password
-  
-      const isPasswordValid = await user.validatePASSWORD(password);
-      
-      if (isPasswordValid) {
 
-        //here we can generate the jwt token
-  
-        //here we can make our code for readable by writing the logic of generating the j     wt token to schema methods 
-  
-        const token = await user.getJWT();
-  
-        //expires the cookie after 7 days
-  
-        res.cookie("token",token,{ maxAge: 7 * 24 * 60 * 60 * 1000});
-  
-        res.status(200).send("user login successfully");
-      } else {
-        res.status(404).send("Invalid Credentials") 
-        }
-    } catch (error) {
-      console.log(error);
+authRouter.post("/login",async (req,res)=>{
+  try {
+    //first of all get the email and password from the user
+    const { email, password } = req.body;
+
+    //then check email provided by the user is present in the db or not
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      res.status(404).send("invalid credantials");
     }
-  });
+
+    //if user email is find in db then we can match the password with the db stored password
+
+    const isPasswordValid = await user.validatePASSWORD(password);
+    
+    if (isPasswordValid) {
+
+      //here we can generate the jwt token
+
+      //here we can make our code for readable by writing the logic of generating the j     wt token to schema methods 
+
+      const token = await user.getJWT();
+
+      //expires the cookie after 7 days
+
+      res.cookie("token",token,{ maxAge: 7 * 24 * 60 * 60 * 1000});
+
+      res.status(200).send(user)
+    } else {
+      res.status(404).send("Invalid Credentials") 
+      }
+  } catch (error) {
+    console.log(error);
+  }
+});
 
   //here we can write the logout api for logout the user
   authRouter.post("/logout",(req,res)=>{
