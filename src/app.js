@@ -2,7 +2,7 @@ const express = require("express");
 const validator = require("validator");
 
 const cookieParser = require("cookie-parser");
-//create an express application instance
+//create an express application instancee
 const jwt = require("jsonwebtoken");
 const app = express();
 const User = require("./models/user");

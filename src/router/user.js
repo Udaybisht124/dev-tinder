@@ -6,6 +6,8 @@ const User = require("../models/user");
 const { set } = require("mongoose");
 const USER_SAVE_DATA = ["firstName","lastName","age","gender","about","photoUrl","skills"];
 userRouter.get("/user/request/receive", Auth, async (req, res) => {
+
+  
   try {
     const loggedInUser = req.user;
 
@@ -53,7 +55,7 @@ userRouter.get("/user/connections", Auth, async (req, res) => {
   }
 });
 
-userRouter.get("/feed", Auth, async (req, res) => {uda
+userRouter.get("/feed", Auth, async (req, res) => {
   try {
 
     

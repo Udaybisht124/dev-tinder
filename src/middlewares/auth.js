@@ -14,7 +14,7 @@ const authentication = async(req,res,next) =>{
   //do the validation for token 
 
 if(!token){
-    res.status(401).send("please Loggin")
+    res.status(401).send("please Loggin");
 }
 
   //decode the token
