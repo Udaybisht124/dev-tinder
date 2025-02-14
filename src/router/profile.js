@@ -8,7 +8,6 @@ const { TokenExpiredError } = require("jsonwebtoken");
 profileRouter.get("/profile/view",Auth,async(req,res)=>{
 const user = req.user;
 res.send(user);
-
 }
 
 )
