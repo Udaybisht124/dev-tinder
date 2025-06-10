@@ -13,7 +13,6 @@ const requestRouter = require("./router/request");
 const userRouter = require("./router/user");
 const cors = require("cors");
 
-
 //configure the dotenv package here to use the environment variable
 
 
@@ -24,7 +23,7 @@ const cors = require("cors");
 //using the express.json middleware to parse the incoming request body as josn
 //using the cors middleware so that one domain can share resources of another domain
 app.use(cors({
-  origin:"https://chipper-brioche-162981.netlify.app/",
+  origin:"http://localhost:5173",
   credentials:true
 }
 ));
@@ -33,7 +32,9 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-
+app.get('/',(req,res)=>{
+  return res.status(200).send('response from the server');
+})
 connectDB().then(() => {
 
   console.log("database connected");
