@@ -14,6 +14,9 @@ const userRouter = require("./router/user");
 const cors = require("cors");
 const PaymentRouter = require("./router/payment");
 
+//configure the dotenv package here to use the environment variable
+
+
 
 //listen the server or app on some port to listen the incoming request to the server
 
@@ -29,7 +32,9 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-
+app.get('/',(req,res)=>{
+  return res.status(200).send('response from the server');
+})
 connectDB().then(() => {
 
   console.log("database connected");
